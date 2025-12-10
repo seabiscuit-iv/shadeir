@@ -1,0 +1,129 @@
+// ------------------------------------------
+
+
+[vector] i32 a = @loadbuf(0)
+[vector] i32 b = @loadbuf(1)
+
+[vector] i32 result
+result = a + b
+
+@writebuf(2) <= result
+
+
+// ------------------------------------------
+
+[vector] i32 input  = @loadbuf(0)
+[scalar] i32        scalar = @loadbuf(1)      # scalar is not a vector
+[vector] i32 result
+
+result = input * scalar
+
+@writebuf(2) <= result
+
+// ------------------------------------------
+
+[vector] i32 grid_in = @loadbuf(0)
+[scalar] i32 width = @loadbuf(1)
+[scalar] i32 height = @loadbuf(2)
+[vector] i32 grid_out
+
+[scalar] i32 idx = 0
+[scalar] i32 size = width * height
+
+#while_exec
+    #exec_mask idx < size
+
+    [scalar] i32 x = idx % width
+    [scalar] i32 y = idx / width
+
+    [scalar] i32 live = 0
+
+    [scalar] i32 nx
+    [scalar] i32 ny
+    [scalar] i32 nidx
+
+    #exec_mask true
+        nx = x - 1
+        ny = y - 1
+        #exec_mask nx >= 0 && nx < width && ny >= 0 && ny < height
+            nidx = nx + ny * width
+            live = live + grid_in[nidx]
+        #exec_mask true
+
+    #exec_mask true
+        nx = x
+        ny = y - 1
+        #exec_mask ny >= 0 && ny < height
+            nidx = nx + ny * width
+            live = live + grid_in[nidx]
+        #exec_mask true
+
+    #exec_mask true
+        nx = x + 1
+        ny = y - 1
+        #exec_mask nx >= 0 && nx < width && ny >= 0 && ny < height
+            nidx = nx + ny * width
+            live = live + grid_in[nidx]
+        #exec_mask true
+
+    #exec_mask true
+        nx = x - 1
+        ny = y
+        #exec_mask nx >= 0 && nx < width
+            nidx = nx + ny * width
+            live = live + grid_in[nidx]
+        #exec_mask true
+
+    #exec_mask true
+        nx = x + 1
+        ny = y
+        #exec_mask nx >= 0 && nx < width
+            nidx = nx + ny * width
+            live = live + grid_in[nidx]
+        #exec_mask true
+
+    #exec_mask true
+        nx = x - 1
+        ny = y + 1
+        #exec_mask nx >= 0 && nx < width && ny < height
+            nidx = nx + ny * width
+            live = live + grid_in[nidx]
+        #exec_mask true
+
+    #exec_mask true
+        nx = x
+        ny = y + 1
+        #exec_mask ny < height
+            nidx = nx + ny * width
+            live = live + grid_in[nidx]
+        #exec_mask true
+
+    #exec_mask true
+        nx = x + 1
+        ny = y + 1
+        #exec_mask nx >= 0 && nx < width && ny < height
+            nidx = nx + ny * width
+            live = live + grid_in[nidx]
+        #exec_mask true
+
+    [scalar] i32 cur = grid_in[idx]
+    [scalar] i32 outv = 0
+
+    #exec_mask cur == 1
+        #exec_mask live == 2 || live == 3
+            outv = 1
+        #exec_mask true
+    #exec_mask true
+
+    #exec_mask cur == 0
+        #exec_mask live == 3
+            outv = 1
+        #exec_mask true
+    #exec_mask true
+
+    grid_out[idx] = outv
+
+    idx = idx + 1
+#end_exec
+
+@writebuf(3) <= grid_out
