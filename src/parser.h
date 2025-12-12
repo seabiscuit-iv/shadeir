@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -7,7 +9,6 @@
 #include <cctype>
 #include <regex>
 
-#pragma once
 enum class CommandType {
     VAR_INIT,
     CTRL_FLOW,

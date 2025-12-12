@@ -1,0 +1,19 @@
+
+.version 9.0
+.target sm_89
+.address_size 64
+
+.visible .entry shadeir(
+
+) {
+
+.reg .pred exec_mask;
+
+
+.reg .s32 r_input;
+.reg .s32 r_accum;
+
+
+
+}
+

@@ -9,6 +9,7 @@ add_executable(
     shade-ir 
     ${SRC_DIR}/main.cpp 
     ${SRC_DIR}/parser.cpp
+    ${SRC_DIR}/variable.cpp
 )
 
 add_subdirectory(libs/fmt)

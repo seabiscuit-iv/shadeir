@@ -1,5 +1,5 @@
 [vector] i32 input
-[vector] f32 accum
+[vector] i32 accum
 
 #while_exec
     #exec_mask input > 0
