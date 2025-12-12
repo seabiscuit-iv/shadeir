@@ -10,6 +10,7 @@ add_executable(
     ${SRC_DIR}/main.cpp 
     ${SRC_DIR}/parser.cpp
     ${SRC_DIR}/variable.cpp
+    ${SRC_DIR}/logexpression.cpp
 )
 
 add_subdirectory(libs/fmt)

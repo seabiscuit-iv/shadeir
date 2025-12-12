@@ -53,7 +53,9 @@ struct VariableInitializer {
 
 struct ControlFlowCommand {
     FlowCmdType flowCmdType;
-    std::string conditional;
+    std::string left;
+    std::string right;
+    std::string comp;
 };
 
 struct Expression {

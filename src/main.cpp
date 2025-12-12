@@ -3,6 +3,7 @@
 #include "parser.h"
 #include "variable.h"
 #include "base_ptx.h"
+#include "logexpression.h"
 #include <fstream>
 
 int main(int argc, char* argv[]) {
@@ -48,7 +49,18 @@ int main(int argc, char* argv[]) {
     for ( const Variable& var : vars ) {
         std::string type = var.data_type == VarDataType::FLOAT ? ".f32" : ".s32";
 
-        out_file << ".reg " << type << " r_" << var.name << ";" << std::endl;
+        out_file << ".reg " << type << " %r_" << var.name << ";" << std::endl;
+    }
+
+    for( Command &cmd : commands ) {
+        if (cmd.cmd_type == CommandType::VAR_INIT) {
+            continue;
+        }
+        if (cmd.cmd_type == CommandType::CTRL_FLOW && cmd.ctrl_flow.flowCmdType == FlowCmdType::EXEC_MASK) {
+            LogExpression exp = str_to_expression(cmd.ctrl_flow.left, cmd.ctrl_flow.comp, cmd.ctrl_flow.right, vars);
+            std::string comp = comparator_to_ptx(exp.comp);
+            out_file << "setp." << comp << ".s32   %exec_mask, %r_" << exp.left.name << ", %r_" << exp.right.name << std::endl;
+        }
     }
 
     out_file << base_ptx_end;

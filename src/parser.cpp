@@ -120,7 +120,19 @@ Command handle_ctrl_flow(const std::smatch& match, int line_number) {
 
     std::string c_flow = match[1]; 
     if (match[2].matched) {
-        cmd.ctrl_flow.conditional = match[2];
+        std::regex cond_pattern(
+            R"(\s*([A-Za-z_]\w*)\s*([><=!]+)\s*([A-Za-z_]\w*|\d+)\s*)"
+        );        
+        std::smatch cond_match;
+        std::string x = match[2];
+
+        if (!std::regex_match(x, cond_match, cond_pattern)) {
+            syntax_err(fmt::format("Illegal logical expression {}", x), line_number);
+        }
+
+        cmd.ctrl_flow.left = cond_match[1];
+        cmd.ctrl_flow.comp = cond_match[2];
+        cmd.ctrl_flow.right = cond_match[3];
     }
 
     if (ctrl_flows_map.count(c_flow)) {
