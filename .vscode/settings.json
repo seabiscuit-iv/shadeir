@@ -49,5 +49,9 @@
         "vector": "cpp",
         "regex": "cpp",
         "unordered_set": "cpp"
-    }
+    },    
+    "cmake.debugConfig": {
+        "cwd": "${workspaceFolder}",
+        "args": ["test.shadeir"]
+    },
 }
