@@ -12,8 +12,9 @@
 
 .reg .s32 %r_input;
 .reg .s32 %r_accum;
-.reg .s32 %r_zero;
-setp.gt.s32   %exec_mask, %r_input, %r_zero
+
+
+setp.gt.s32   %exec_mask, %r_input, 0;
 
 
 

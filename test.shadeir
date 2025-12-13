@@ -1,10 +1,8 @@
 [vector] i32 input
 [vector] i32 accum
 
-[scalar] i32 zero
-
 #while_exec
-    #exec_mask input > zero
+    #exec_mask input > 0
     accum = accum + input
     input = input - 1
 #end_exec

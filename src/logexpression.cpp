@@ -33,26 +33,42 @@ LogExpression str_to_expression(const std::string& left, const std::string& comp
 
     Comparator c = str_to_comparator(comp);
 
-    auto find_left = std::find_if(var_list.begin(), var_list.end(), [&](const Variable& var){
-        return var.name == left;
-    });
+    exp.left_is_literal = is_number(left);
+    exp.right_is_literal = is_number(right);
 
-    auto find_right = std::find_if(var_list.begin(), var_list.end(), [&](const Variable& var){
-        return var.name == right;
-    });
-
-    if (find_left == var_list.end()) {
-        fmt::println("Undeclared variable {}", left);
-        exit(1);
+    if ( exp.left_is_literal ) {
+        exp.l_left.l_int = std::stoi(left);
     }
-    else if (find_right == var_list.end()) {
-        fmt::println("Undeclared variable {}", right);
-        exit(1);
+    else {
+        auto find_left = std::find_if(var_list.begin(), var_list.end(), [&](const Variable& var){
+            return var.name == left;
+        });
+
+        if (find_left == var_list.end()) {
+            fmt::println("Undeclared variable {}", left);
+            exit(1);
+        }
+
+        exp.left = *find_left;
     }
 
+    if ( exp.right_is_literal ) {
+        exp.l_right.l_int = std::stoi(right);
+    }
+    else {
+        auto find_right = std::find_if(var_list.begin(), var_list.end(), [&](const Variable& var){
+            return var.name == right;
+        });
+
+        if (find_right == var_list.end()) {
+            fmt::println("Undeclared variable {}", right);
+            exit(1);
+        }
+
+        exp.right = *find_right;
+    }
+    
     exp.comp = c;
-    exp.left = *find_left;
-    exp.right = *find_right;
 
     return exp;
 }

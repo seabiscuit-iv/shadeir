@@ -52,6 +52,8 @@ int main(int argc, char* argv[]) {
         out_file << ".reg " << type << " %r_" << var.name << ";" << std::endl;
     }
 
+    out_file << "\n\n";
+
     for( Command &cmd : commands ) {
         if (cmd.cmd_type == CommandType::VAR_INIT) {
             continue;
@@ -59,7 +61,11 @@ int main(int argc, char* argv[]) {
         if (cmd.cmd_type == CommandType::CTRL_FLOW && cmd.ctrl_flow.flowCmdType == FlowCmdType::EXEC_MASK) {
             LogExpression exp = str_to_expression(cmd.ctrl_flow.left, cmd.ctrl_flow.comp, cmd.ctrl_flow.right, vars);
             std::string comp = comparator_to_ptx(exp.comp);
-            out_file << "setp." << comp << ".s32   %exec_mask, %r_" << exp.left.name << ", %r_" << exp.right.name << std::endl;
+
+            std::string left_name = exp.left_is_literal ? fmt::format("{}", exp.l_left.l_int) : fmt::format("%r_{}", exp.left.name);
+            std::string right_name = exp.right_is_literal ? fmt::format("{}", exp.l_right.l_int) : fmt::format("%r_{}", exp.right.name);
+
+            out_file << "setp." << comp << ".s32   %exec_mask, " << left_name << ", " << right_name << ";" << std::endl;
         }
     }
 
