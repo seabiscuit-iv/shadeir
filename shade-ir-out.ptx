@@ -7,7 +7,7 @@
 
 ) {
 
-.reg .pred exec_mask;
+.reg .pred %exec_mask;
 
 
 .reg .s32 %r_input;
@@ -15,8 +15,11 @@
 
 
 setp.gt.s32   %exec_mask, %r_input, 0;
+add.s32   %r_accum, %r_accum, %r_input;
+sub.s32   %r_input, %r_input, 1;
 
 
+ret;
 
 }
 

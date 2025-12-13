@@ -58,7 +58,7 @@ int main(int argc, char* argv[]) {
         if (cmd.cmd_type == CommandType::VAR_INIT) {
             continue;
         }
-        if (cmd.cmd_type == CommandType::CTRL_FLOW && cmd.ctrl_flow.flowCmdType == FlowCmdType::EXEC_MASK) {
+        else if (cmd.cmd_type == CommandType::CTRL_FLOW && cmd.ctrl_flow.flowCmdType == FlowCmdType::EXEC_MASK) {
             LogExpression exp = str_to_expression(cmd.ctrl_flow.left, cmd.ctrl_flow.comp, cmd.ctrl_flow.right, vars);
             std::string comp = comparator_to_ptx(exp.comp);
 
@@ -66,6 +66,35 @@ int main(int argc, char* argv[]) {
             std::string right_name = exp.right_is_literal ? fmt::format("{}", exp.l_right.l_int) : fmt::format("%r_{}", exp.right.name);
 
             out_file << "setp." << comp << ".s32   %exec_mask, " << left_name << ", " << right_name << ";" << std::endl;
+        }
+        else if (cmd.cmd_type == CommandType::EXPRESSION) {
+            std::string a;
+            if (is_number(cmd.expression.a)) {
+                a = fmt::format("{}", cmd.expression.a);
+            }
+            else {
+                a = fmt::format("%r_{}", find_var(cmd.expression.a, vars)->name);
+            }
+
+            std::string b;
+            if (is_number(cmd.expression.b)) {
+                b = fmt::format("{}", cmd.expression.b);
+            }
+            else {
+                b = fmt::format("%r_{}", find_var(cmd.expression.b, vars)->name);
+            }
+
+            std::string c;
+            if (is_number(cmd.expression.c)) {
+                c = fmt::format("{}", cmd.expression.c);
+            }
+            else {
+                c = fmt::format("%r_{}", find_var(cmd.expression.c, vars)->name);
+            }
+
+            std::string op = operator_to_ptx.at(cmd.expression.op);
+
+            out_file << op << ".s32   " << c << ", " << a << ", " << b << ";" << std::endl;
         }
     }
 

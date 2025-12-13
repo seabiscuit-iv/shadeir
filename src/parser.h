@@ -93,6 +93,14 @@ const std::unordered_map<std::string, OperatorType> operator_map = {
     {"%", OperatorType::MODULUS}
 };
 
+const std::unordered_map<OperatorType, std::string> operator_to_ptx = {
+    {OperatorType::ADD, "add"},
+    {OperatorType::SUBTRACT, "sub"},
+    {OperatorType::MULTIPLY, "mul.lo"},
+    {OperatorType::DIVIDE, "div"},
+    {OperatorType::MODULUS, "rem"}
+};
+
 const std::regex var_init_pattern(
    "^\\s*\\[([^\\]]+)\\]\\s+([A-Za-z]\\w*)\\s+([A-Za-z_]\\w*)\\s*$"
 );

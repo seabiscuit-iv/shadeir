@@ -40,34 +40,18 @@ LogExpression str_to_expression(const std::string& left, const std::string& comp
         exp.l_left.l_int = std::stoi(left);
     }
     else {
-        auto find_left = std::find_if(var_list.begin(), var_list.end(), [&](const Variable& var){
-            return var.name == left;
-        });
-
-        if (find_left == var_list.end()) {
-            fmt::println("Undeclared variable {}", left);
-            exit(1);
-        }
-
-        exp.left = *find_left;
+        const Variable* var = find_var(left, var_list);
+        exp.left = *var;
     }
 
     if ( exp.right_is_literal ) {
         exp.l_right.l_int = std::stoi(right);
     }
     else {
-        auto find_right = std::find_if(var_list.begin(), var_list.end(), [&](const Variable& var){
-            return var.name == right;
-        });
-
-        if (find_right == var_list.end()) {
-            fmt::println("Undeclared variable {}", right);
-            exit(1);
-        }
-
-        exp.right = *find_right;
+        const Variable* var = find_var(right, var_list);
+        exp.right = *var;
     }
-    
+
     exp.comp = c;
 
     return exp;

@@ -14,3 +14,5 @@ struct Literal {
 };
 
 std::vector<Variable> get_variable_list( const std::vector<Command>& commands );
+
+const Variable* find_var( const std::string& name, const std::vector<Variable>& vars );

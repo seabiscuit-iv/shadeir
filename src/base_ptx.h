@@ -11,13 +11,14 @@ const std::string base_ptx_start = R"(
 
 ) {
 
-.reg .pred exec_mask;
+.reg .pred %exec_mask;
 
 
 )";
 
 const std::string base_ptx_end = R"(
 
+ret;
 
 }
 
